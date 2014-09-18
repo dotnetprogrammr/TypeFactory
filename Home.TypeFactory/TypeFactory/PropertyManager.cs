@@ -10,7 +10,7 @@ namespace Home.TypeFactory
 {
     internal class PropertyManager
     {
-        public void DefineProperty<T>(TypeBuilder builder, string name)
+        public void DefineProperty(TypeBuilder builder, Type type, string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -21,14 +21,14 @@ namespace Home.TypeFactory
             string propertyName = Char.ToUpperInvariant(name[0]) + name.Substring(1);
 
             FieldBuilder fieldBuilder = builder.DefineField(
-                fieldName, 
-                typeof(T),
+                fieldName,
+                type,
                 FieldAttributes.Private);
 
             PropertyBuilder propertyBuilder = builder.DefineProperty(
                 propertyName,
-                PropertyAttributes.HasDefault, 
-                typeof(T), 
+                PropertyAttributes.HasDefault,
+                type, 
                 null);
 
             //Getter
@@ -36,8 +36,8 @@ namespace Home.TypeFactory
                 "get_" + propertyName, 
                 MethodAttributes.Public |
                 MethodAttributes.SpecialName |
-                MethodAttributes.HideBySig, 
-                typeof(T), 
+                MethodAttributes.HideBySig,
+                type, 
                 Type.EmptyTypes);
 
             ILGenerator getILGenerator = getMethodBuilder.GetILGenerator();
@@ -52,8 +52,8 @@ namespace Home.TypeFactory
                 MethodAttributes.Public |
                 MethodAttributes.SpecialName |
                 MethodAttributes.HideBySig, 
-                null, 
-                new Type[] { typeof(T) });
+                null,
+                new Type[] { type });
 
             ILGenerator setILGenerator = setMethodBuilder.GetILGenerator();
 
